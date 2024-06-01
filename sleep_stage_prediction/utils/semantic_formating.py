@@ -1,13 +1,14 @@
 import numpy as np
 
-def semantic_formating(output_size, events, sufficient_overlap=.25):
-    """ Return binary array from [start, duration] array 
+
+def semantic_formating(output_size, events, sufficient_overlap=0.25):
+    """Return binary array from [start, duration] array
 
     output_size:    size if binary array to output.
     events format:  [[relative_start, relative_stop], [relative_start, relative_stop]]
     output: binary_array
 
-    e.g. 
+    e.g.
     semantic_formating(output_size=10, events=[[0.1, 0.2], [0.6, 0.8]])
     output: ([0, 1, 0, 0, 0, 0, 1, 1, 0, 0])
     """
@@ -28,7 +29,7 @@ def semantic_formating(output_size, events, sufficient_overlap=.25):
             else:
                 stop_idx = int(round(event[1] * output_size))
             try:
-                output[start_idx: stop_idx] = 1
+                output[start_idx:stop_idx] = 1
             except:
                 k = 1
 

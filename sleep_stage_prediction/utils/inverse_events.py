@@ -2,6 +2,7 @@ from .binary_to_array import binary_to_array
 from .semantic_formating import semantic_formating
 import numpy as np
 
+
 def inverse_events(output_size, events):
     events_ori = events
     if events.size > 0:

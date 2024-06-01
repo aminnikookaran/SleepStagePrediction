@@ -39,5 +39,5 @@ __all__ = [
     "dict_merge",
     "pool1d",
     "pool2d",
-    "relative_start_by_intersection"
+    "relative_start_by_intersection",
 ]

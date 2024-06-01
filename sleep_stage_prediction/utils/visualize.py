@@ -4,21 +4,27 @@ from matplotlib import gridspec
 
 from signal_processing import DA_MagWarp, DA_Jitter, DA_Scaling, DA_Inverting, DA_TimeWarp
 from datasets import get_train_validation_test, Dataset, BalancedDataset
-from models_old import aggregated_residual_model, transfer_model, reconfigure_model, get_model_activation, predict_dataset, train
+from models_old import (
+    aggregated_residual_model,
+    transfer_model,
+    reconfigure_model,
+    get_model_activation,
+    predict_dataset,
+    train,
+)
 
 seed = 2020
-h5_directory = 'D:\\datasets\\mesa\\processed_data\\h5\\'
+h5_directory = "D:\\datasets\\mesa\\processed_data\\h5\\"
 # h5_directory = 'D:\\datasets\\mesa\\processed_data\\h5_balanced\\'
 # h5_directory = 'D:\\datasets\\Amazfit\\processed_data\\h5\\'
-model_directory = 'D:\\Arc_study\\models_old\\'
-tensorboard_directory = 'D:\\Arc_study\\tensorboard\\'
-training_log_directory = 'D:\\Arc_study\\log\\'
+model_directory = "D:\\Arc_study\\models_old\\"
+tensorboard_directory = "D:\\Arc_study\\tensorboard\\"
+training_log_directory = "D:\\Arc_study\\log\\"
 
 
-train_recs, validation_recs, test_recs = get_train_validation_test(h5_directory,
-                                                                   percent_test=3, # 20
-                                                                   percent_validation=3, # 20
-                                                                   seed=seed)
+train_recs, validation_recs, test_recs = get_train_validation_test(
+    h5_directory, percent_test=3, percent_validation=3, seed=seed  # 20  # 20
+)
 
 # balance filesnames:
 # train__recs_balanced = train + [tr for tr in train if tr[:4] == 'STNF']*2
@@ -30,24 +36,9 @@ print("Number of records test:", len(test_recs))
 
 window = 240  # window duration in seconds
 
-signals_format = [
-    {
-        'h5_path': 'ppg',
-        'fs': 32
-    },
-    {
-        'h5_path': 'emg_combined',
-        'fs': 32
-    }
-]
+signals_format = [{"h5_path": "ppg", "fs": 32}, {"h5_path": "emg_combined", "fs": 32}]
 
-events_format = [
-    {
-        'name': 'SDB',
-        'h5_path': 'SDB',
-        'probability': 0.75
-    }
-]
+events_format = [{"name": "SDB", "h5_path": "SDB", "probability": 0.75}]
 
 
 dataset_parameters = {
@@ -60,7 +51,7 @@ dataset_parameters = {
     "minimum_overlap": 0.75,
     "batch_size": 64,
     "transformations": None,
-    "mask_threshold": 0.2
+    "mask_threshold": 0.2,
 }
 
 
@@ -76,23 +67,24 @@ for idx in range(train_dataset.__len__()):
 
     plt.figure(figsize=(10 * 2, 2 * train_dataset.number_of_channels), dpi=600)
     gs = gridspec.GridSpec(train_dataset.number_of_channels, 1)
-    gs.update(wspace=0., hspace=0.)
+    gs.update(wspace=0.0, hspace=0.0)
     for batch_num in range(signal.shape[0]):
         if any(events[batch_num, :, 0]):
             for channel_num in range(len(train_dataset.signals_format)):
                 ax = plt.subplot(gs[channel_num, 0])
                 # ax.set_ylim(-0.55, 0.55)
-                ax.plot(ts_signal, signal[batch_num, :, channel_num], alpha=.3, linewidth=.3)
+                ax.plot(ts_signal, signal[batch_num, :, channel_num], alpha=0.3, linewidth=0.3)
 
                 for event_num in range(len(train_dataset.events_format)):
-                    ax.plot(ts_event, events[batch_num, :, event_num]*5,
-                            alpha=.5,
-                            linewidth=.3,
-                            color="C{}".format(event_num))
-            plt.savefig('D:\Arc_study\\figures\\Arc2_test' + str(batch_num) + '.pdf')
+                    ax.plot(
+                        ts_event,
+                        events[batch_num, :, event_num] * 5,
+                        alpha=0.5,
+                        linewidth=0.3,
+                        color="C{}".format(event_num),
+                    )
+            plt.savefig("D:\Arc_study\\figures\\Arc2_test" + str(batch_num) + ".pdf")
             plt.close()
-
-
 
 
 for n in range(train_dataset.__len__()):
@@ -107,28 +99,28 @@ for n in range(train_dataset.__len__()):
     plt.figure(figsize=(30, 16), dpi=600)
 
     plt.subplot(3, 2, 1)
-    plt.plot(ts_signal, signal[0, :, :], linewidth=.3)
-    plt.title('raw')
+    plt.plot(ts_signal, signal[0, :, :], linewidth=0.3)
+    plt.title("raw")
 
     plt.subplot(3, 2, 2)
-    plt.plot(ts_signal, x1, linewidth=.3)
-    plt.title('Jitter')
+    plt.plot(ts_signal, x1, linewidth=0.3)
+    plt.title("Jitter")
 
     plt.subplot(3, 2, 3)
-    plt.plot(ts_signal, x2, linewidth=.3)
-    plt.title('scaling')
+    plt.plot(ts_signal, x2, linewidth=0.3)
+    plt.title("scaling")
 
     plt.subplot(3, 2, 4)
-    plt.plot(ts_signal, x3, linewidth=.3)
-    plt.title('inverting')
+    plt.plot(ts_signal, x3, linewidth=0.3)
+    plt.title("inverting")
 
     plt.subplot(3, 2, 5)
-    plt.plot(ts_signal, x4, linewidth=.3)
-    plt.title('magwarp')
+    plt.plot(ts_signal, x4, linewidth=0.3)
+    plt.title("magwarp")
 
     plt.subplot(3, 2, 6)
-    plt.plot(ts_signal, x5, linewidth=.3)
-    plt.title('timewarp')
+    plt.plot(ts_signal, x5, linewidth=0.3)
+    plt.title("timewarp")
 
-    plt.savefig('D:\Arc_study\\figures\\regu.pdf')
+    plt.savefig("D:\Arc_study\\figures\\regu.pdf")
     k = 1

@@ -1,4 +1,3 @@
-
 def create_pairs(list_for_indexing):
     N = len(list_for_indexing)
     if N == 1:
@@ -16,4 +15,3 @@ def pascal_triangle_indexes(N):
 
     if N < 1:
         return None
-

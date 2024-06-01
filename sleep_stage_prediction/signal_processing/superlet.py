@@ -13,13 +13,13 @@ from scipy.signal import fftconvolve
 
 
 def superlet(
-        data_arr,
-        samplerate,
-        scales,
-        order_max,
-        order_min=1,
-        c_1=3,
-        adaptive=False,
+    data_arr,
+    samplerate,
+    scales,
+    order_max,
+    order_min=1,
+    c_1=3,
+    adaptive=False,
 ):
     """
     Performs Superlet Transform (SLT) according to Moca et al. [1]_
@@ -86,9 +86,7 @@ def superlet(
     # multiplicative SLT
     else:
 
-        gmean_spec = multiplicativeSLT(
-            data_arr, samplerate, scales, order_max, order_min, c_1
-        )
+        gmean_spec = multiplicativeSLT(data_arr, samplerate, scales, order_max, order_min, c_1)
 
     return gmean_spec
 
@@ -113,7 +111,7 @@ def multiplicativeSLT(data_arr, samplerate, scales, order_max, order_min=1, c_1=
 
 
 def FASLT(data_arr, samplerate, scales, order_max, order_min=1, c_1=3):
-    """ Fractional adaptive SL transform
+    """Fractional adaptive SL transform
     For non-integer orders fractional SLTs are
     calculated in the interval [order, order+1) via:
 
@@ -171,9 +169,7 @@ def FASLT(data_arr, samplerate, scales, order_max, order_min=1, c_1=3):
 
         # multiply non-fractional next_spec for
         # all remaining scales/frequencies
-        gmean_spec[jump + 1:] *= np.power(
-            next_spec[jump - last_jump + 1:].T, exponents[jump + 1:]
-        ).T
+        gmean_spec[jump + 1 :] *= np.power(next_spec[jump - last_jump + 1 :].T, exponents[jump + 1 :]).T
 
         # go to the next [order, order+1) interval
         last_jump = jump + 1
@@ -183,7 +179,7 @@ def FASLT(data_arr, samplerate, scales, order_max, order_min=1, c_1=3):
 
 class MorletSL:
     def __init__(self, c_i=3, k_sd=5):
-        """ The Morlet formulation according to
+        """The Morlet formulation according to
         Moca et al. shifts the admissability criterion from
         the central frequency to the number of cycles c_i
         within the Gaussian envelope which has a constant
@@ -272,7 +268,7 @@ def cwtSL(data, wavelet, scales, dt):
     for ind, scale in enumerate(scales):
         t = _get_superlet_support(scale, dt, wavelet.c_i)
         # sample wavelet and normalise
-        norm = dt ** 0.5 / (4 * np.pi)
+        norm = dt**0.5 / (4 * np.pi)
         wavelet_data = norm * wavelet(t, scale)  # this is an 1d array for sure!
         output[ind, :] = fftconvolve(data, wavelet_data[tuple(slices)], mode="same")
 
@@ -354,6 +350,7 @@ def gen_superlet_testdata(freqs=[20, 40, 60], cycles=11, fs=1000, eps=0):
 
     return signal
 
+
 def cal_superlet(x, fs, window, noverlap, nfft, f_min, f_max, f_sub, plot_flag=False, sub=32):
     from matplotlib import pyplot as ppl
     import sys
@@ -363,7 +360,7 @@ def cal_superlet(x, fs, window, noverlap, nfft, f_min, f_max, f_sub, plot_flag=F
     x = x + np.random.normal(loc=0, scale=sys.float_info.epsilon, size=(x.shape))
 
     # frequencies of interest in Hz
-    foi = np.linspace(f_min + 1/nfft, f_max, nfft)
+    foi = np.linspace(f_min + 1 / nfft, f_max, nfft)
     scales = scale_from_period(1 / (foi + sys.float_info.epsilon))
     k = time()
     spec = superlet(
@@ -379,7 +376,7 @@ def cal_superlet(x, fs, window, noverlap, nfft, f_min, f_max, f_sub, plot_flag=F
     S = maxfilt(np.abs(spec), size=(1, fs * 1))
     S = S[:, ::f_sub]
     S_ = np.swapaxes(S, axis1=1, axis2=0)
-    #S_ = np.log(S_ + sys.float_info.epsilon)
+    # S_ = np.log(S_ + sys.float_info.epsilon)
 
     print(time() - k)
     # amplitude scalogram
@@ -387,45 +384,35 @@ def cal_superlet(x, fs, window, noverlap, nfft, f_min, f_max, f_sub, plot_flag=F
     if plot_flag:
         idx0 = 3600 * 2
         idx1 = 3720 * 2
-        plot_superlet(x=x[idx0 * fs : idx1 * fs],
-                      spec=spec[:, idx0 * fs: idx1 * fs],
-                      foi=foi,
-                      fs = fs)
+        plot_superlet(x=x[idx0 * fs : idx1 * fs], spec=spec[:, idx0 * fs : idx1 * fs], foi=foi, fs=fs)
 
-        #coefs = np.flipud(spec)
-        #coefs = np.swapaxes(coefs, 1, 0)
+        # coefs = np.flipud(spec)
+        # coefs = np.swapaxes(coefs, 1, 0)
         coefs = maxfilt(np.abs(spec), size=(1, fs * 1))
         coefs = coefs[:, ::sub]
-        plot_superlet(x=x[idx0 * fs: idx1 * fs],
-                      spec=coefs[:, idx0: idx1],
-                      foi=foi,
-                      fs=fs)
-
+        plot_superlet(x=x[idx0 * fs : idx1 * fs], spec=coefs[:, idx0:idx1], foi=foi, fs=fs)
 
     return S_
 
-def plot_superlet(x, spec, foi,  fs):
+
+def plot_superlet(x, spec, foi, fs):
     import matplotlib.pyplot as ppl
 
     ampls = np.abs(spec)
 
-    fig, (ax1, ax2) = ppl.subplots(2, 1,
-                                   sharex=True,
-                                   gridspec_kw={"height_ratios": [1, 3]},
-                                   figsize=(6, 6))
+    fig, (ax1, ax2) = ppl.subplots(2, 1, sharex=True, gridspec_kw={"height_ratios": [1, 3]}, figsize=(6, 6))
 
-    ax1.plot(np.arange(x.size) / fs, x, c='cornflowerblue')
-    ax1.set_ylabel('signal (a.u.)')
+    ax1.plot(np.arange(x.size) / fs, x, c="cornflowerblue")
+    ax1.set_ylabel("signal (a.u.)")
 
     extent = [0, len(x) / fs, foi[0], foi[-1]]
-    im = ax2.imshow(ampls, cmap="magma", aspect="auto", extent=extent, origin='lower')
+    im = ax2.imshow(ampls, cmap="magma", aspect="auto", extent=extent, origin="lower")
 
-    ppl.colorbar(im, ax=ax2, orientation='horizontal',
-                 shrink=0.7, pad=0.2, label='amplitude (a.u.)')
+    ppl.colorbar(im, ax=ax2, orientation="horizontal", shrink=0.7, pad=0.2, label="amplitude (a.u.)")
 
-    #ax2.plot([0, len(x) / fs], [20, 20], "--", c='0.5')
-    #ax2.plot([0, len(x) / fs], [40, 40], "--", c='0.5')
-    #ax2.plot([0, len(x) / fs], [60, 60], "--", c='0.5')
+    # ax2.plot([0, len(x) / fs], [20, 20], "--", c='0.5')
+    # ax2.plot([0, len(x) / fs], [40, 40], "--", c='0.5')
+    # ax2.plot([0, len(x) / fs], [60, 60], "--", c='0.5')
 
     ax2.set_xlabel("time (s)")
     ax2.set_ylabel("frequency (Hz)")

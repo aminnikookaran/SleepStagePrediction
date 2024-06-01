@@ -2,10 +2,8 @@ import random
 import os
 from sklearn.model_selection import KFold
 
-def get_train_validation_test(h5_directory,
-                              percent_test,
-                              percent_validation,
-                              seed=None):
+
+def get_train_validation_test(h5_directory, percent_test, percent_validation, seed=None):
 
     records = [x for x in os.listdir(h5_directory) if x[-2:] == "h5"]
 

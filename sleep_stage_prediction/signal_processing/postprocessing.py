@@ -26,12 +26,11 @@ def post_processing(prediction, merge_size, min_len, plot_flag=False):
         gs = fig.add_gridspec(nrows=1, ncols=1)
         ax = fig.add_subplot(gs[0])
 
-        ax.plot(prediction_ori, linewidth=.2)
-        ax.plot(prediction, linewidth=.2)
-        ax.set_title('merge size: {}. min len: {}'.format(merge_size, min_len), size=fontsize)
-        ax.legend(['original', 'changed'], loc=4)
+        ax.plot(prediction_ori, linewidth=0.2)
+        ax.plot(prediction, linewidth=0.2)
+        ax.set_title("merge size: {}. min len: {}".format(merge_size, min_len), size=fontsize)
+        ax.legend(["original", "changed"], loc=4)
 
         plt.show()
-
 
     return prediction

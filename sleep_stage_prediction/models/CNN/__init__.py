@@ -1,5 +1,3 @@
 from .resunet import ResUNet
 
-__all__ = [
-    'ResUNet'
-]
+__all__ = ["ResUNet"]

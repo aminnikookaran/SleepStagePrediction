@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def buffer_indexes(signal, window_length, overlap=0):
 
     signal_length = len(signal)
@@ -9,6 +10,6 @@ def buffer_indexes(signal, window_length, overlap=0):
     windows = np.zeros((N_WINDOWS, window_length), dtype=int)
 
     for n in range(N_WINDOWS):
-        windows[n, :] = range(n * W_STEP, window_length + n *W_STEP)
+        windows[n, :] = range(n * W_STEP, window_length + n * W_STEP)
 
     return windows

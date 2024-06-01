@@ -3,13 +3,13 @@ import numpy as np
 
 def non_max_suppression(localizations, scores, overlap=0.5):
     """1D nms
-        
-        localizations: tensor of localizations
-        (in array format [[start1, end1], [start2, end2], ...])
 
-        score: softmax score of event 0 <= score <= 1.
+    localizations: tensor of localizations
+    (in array format [[start1, end1], [start2, end2], ...])
 
-        overlap: overlap between objects. 
+    score: softmax score of event 0 <= score <= 1.
+
+    overlap: overlap between objects.
 
     """
     x = localizations[:, 0]

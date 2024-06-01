@@ -13,24 +13,22 @@ h5_dir = sys.argv[2]
 if not os.path.isdir(h5_dir):
     os.makedirs(h5_dir)
 
-records = [f for f in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, f))] # record directory
-annotations = {'sleep_stage_annotation.json': ['wake', 'light', 'deep', 'rem']} # annotations contained in record dir.
+records = [f for f in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, f))]  # record directory
+annotations = {"sleep_stage_annotation.json": ["wake", "light", "deep", "rem"]}  # annotations contained in record dir.
 
 
 for record in tqdm.tqdm(records):
     edf_filename = data_dir + record + ".edf"
-    h5_filename = '{}/{}.h5'.format(h5_dir, record)
+    h5_filename = "{}/{}.h5".format(h5_dir, record)
 
-    with h5py.File(h5_filename, 'w') as h5:
+    with h5py.File(h5_filename, "w") as h5:
 
         # Extract each annotation file from the record directory:
         for anno_filename, anno_labels in annotations.items():
             anno_filename = data_dir + record + anno_filename
 
             for anno_label in anno_labels:
-                events = [
-                    (x["start"], x["end"] - x["start"]) for x in json.load(open(anno_filename))
-                ]
+                events = [(x["start"], x["end"] - x["start"]) for x in json.load(open(anno_filename))]
 
                 starts, durations = list(zip(*events))
                 h5.create_group(anno_label)
