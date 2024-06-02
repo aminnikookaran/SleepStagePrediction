@@ -1,14 +1,14 @@
 import numpy as np
 from tensorflow.keras.utils import Sequence
 from joblib import Memory, Parallel, delayed
-from utils import check_inf_nan
+from sleep_stage_prediction.utils import check_inf_nan
 import random
 import tqdm
 
 np.seterr(all="raise")
 
-from utils import get_h5_data, get_h5_events, semantic_formating, get_h5_auxiliary
-from signal_processing import normalizers, regularizers
+from sleep_stage_prediction.utils import get_h5_data, get_h5_events, semantic_formating, get_h5_auxiliary
+from sleep_stage_prediction.signal_processing import normalizers, regularizers
 
 
 class DatasetGenerator(Sequence):
